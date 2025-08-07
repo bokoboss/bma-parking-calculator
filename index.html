@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>โปรแกรมคำนวณที่จอดรถ | Parking Calculator</title>
+    <title>โปรแกรมคำนวณจำนวนที่จอดรถ | Parking Calculator</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -170,7 +170,7 @@
             const textarea = document.createElement('textarea');
             textarea.value = summaryText;
             document.body.appendChild(textarea);
-textarea.select();
+            textarea.select();
             document.execCommand('copy');
             document.body.removeChild(textarea);
 
@@ -221,19 +221,26 @@ textarea.select();
 
             let disabledSpaces = 0;
             let disabledCalcString = '';
-            // ... (Calculation logic remains the same)
-            if (effectiveCarSpaces >= 1 && effectiveCarSpaces <= 15) {
-                disabledSpaces = 1; disabledCalcString = `จำนวนที่จอดรถยนต์ ${effectiveCarSpaces.toLocaleString()} คัน อยู่ในช่วง 1-15 คัน กำหนดให้มี 1 คัน`;
-            } else if (effectiveCarSpaces >= 16 && effectiveCarSpaces <= 50) {
-                disabledSpaces = 2; disabledCalcString = `จำนวนที่จอดรถยนต์ ${effectiveCarSpaces.toLocaleString()} คัน อยู่ในช่วง 16-50 คัน กำหนดให้มี 2 คัน`;
+            
+            // *** CORRECTED LOGIC FOR DISABLED PARKING ***
+            if (effectiveCarSpaces >= 1 && effectiveCarSpaces <= 25) {
+                disabledSpaces = 1; 
+                disabledCalcString = `จำนวนที่จอดรถยนต์ไม่เกิน 25 คัน (<strong>${effectiveCarSpaces.toLocaleString()} คัน</strong>) กำหนดให้มีอย่างน้อย 1 ที่จอด`;
+            } else if (effectiveCarSpaces >= 26 && effectiveCarSpaces <= 50) {
+                disabledSpaces = 2; 
+                disabledCalcString = `จำนวนที่จอดรถยนต์ <strong>${effectiveCarSpaces.toLocaleString()} คัน</strong> อยู่ในช่วง 26-50 คัน กำหนดให้มีอย่างน้อย 2 ที่จอด`;
             } else if (effectiveCarSpaces >= 51 && effectiveCarSpaces <= 75) {
-                disabledSpaces = 3; disabledCalcString = `จำนวนที่จอดรถยนต์ ${effectiveCarSpaces.toLocaleString()} คัน อยู่ในช่วง 51-75 คัน กำหนดให้มี 3 คัน`;
+                disabledSpaces = 3; 
+                disabledCalcString = `จำนวนที่จอดรถยนต์ <strong>${effectiveCarSpaces.toLocaleString()} คัน</strong> อยู่ในช่วง 51-75 คัน กำหนดให้มีอย่างน้อย 3 ที่จอด`;
             } else if (effectiveCarSpaces >= 76 && effectiveCarSpaces <= 100) {
-                disabledSpaces = 4; disabledCalcString = `จำนวนที่จอดรถยนต์ ${effectiveCarSpaces.toLocaleString()} คัน อยู่ในช่วง 76-100 คัน กำหนดให้มี 4 คัน`;
+                disabledSpaces = 4; 
+                disabledCalcString = `จำนวนที่จอดรถยนต์ <strong>${effectiveCarSpaces.toLocaleString()} คัน</strong> อยู่ในช่วง 76-100 คัน กำหนดให้มีอย่างน้อย 4 ที่จอด`;
             } else if (effectiveCarSpaces >= 101 && effectiveCarSpaces <= 150) {
-                disabledSpaces = 5; disabledCalcString = `จำนวนที่จอดรถยนต์ ${effectiveCarSpaces.toLocaleString()} คัน อยู่ในช่วง 101-150 คัน กำหนดให้มี 5 คัน`;
+                disabledSpaces = 5; 
+                disabledCalcString = `จำนวนที่จอดรถยนต์ <strong>${effectiveCarSpaces.toLocaleString()} คัน</strong> อยู่ในช่วง 101-150 คัน กำหนดให้มีอย่างน้อย 5 ที่จอด`;
             } else if (effectiveCarSpaces >= 151 && effectiveCarSpaces <= 200) {
-                disabledSpaces = 6; disabledCalcString = `จำนวนที่จอดรถยนต์ ${effectiveCarSpaces.toLocaleString()} คัน อยู่ในช่วง 151-200 คัน กำหนดให้มี 6 คัน`;
+                disabledSpaces = 6; 
+                disabledCalcString = `จำนวนที่จอดรถยนต์ <strong>${effectiveCarSpaces.toLocaleString()} คัน</strong> อยู่ในช่วง 151-200 คัน กำหนดให้มีอย่างน้อย 6 ที่จอด`;
             } else if (effectiveCarSpaces > 200) {
                 const extraCars = effectiveCarSpaces - 200;
                 const additionalSpaces = Math.round(extraCars / 100);
