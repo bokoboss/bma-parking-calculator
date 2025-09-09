@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>โปรแกรมคำนวณจำนวนที่จอดรถ | Parking Calculator</title>
+    <title>โปรแกรมคำนวณจำนวนที่จอดรถ | Parking Calculator (Minimal)</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -11,70 +11,23 @@
     <style>
         body {
             font-family: 'Sarabun', sans-serif;
-            background-color: #f8fafc; /* Lighter gray background */
-        }
-        .card {
-            background-color: white;
-            border-radius: 0.75rem;
-            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.07), 0 2px 4px -2px rgb(0 0 0 / 0.07);
-            transition: all 0.3s ease-in-out;
-        }
-        .card:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -2px rgb(0 0 0 / 0.05);
-        }
-        .result-value {
-            font-size: 2.5rem; /* Slightly larger */
-            font-weight: 700;
-            color: #1e3a8a; /* Darker blue */
-        }
-        .unit {
-            font-size: 1rem;
-            font-weight: 500;
-            color: #9ca3af; /* Lighter gray for unit */
-            margin-left: 0.5rem;
-            align-self: flex-end;
-            margin-bottom: 0.25rem;
-        }
-        .icon-wrapper {
-            width: 50px;
-            height: 50px;
-            background-color: #f1f5f9; /* Consistent light gray background */
-            border-radius: 9999px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        .icon {
-            width: 28px;
-            height: 28px;
+            background-color: #f8fafc; /* slate-50 */
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
         }
         .details-content {
-            display: none; /* Hidden by default */
             overflow: hidden;
-            transition: max-height 0.5s ease-in-out, padding 0.5s ease;
+            transition: max-height 0.4s ease-in-out, padding 0.4s ease-in-out, margin 0.4s ease-in-out;
             max-height: 0;
             padding-top: 0;
             padding-bottom: 0;
+            margin-top: 0;
         }
         .details-content.show {
-            display: block;
             max-height: 500px; /* Adjust as needed */
             padding-top: 1rem;
-            padding-bottom: 1rem;
-        }
-        .toggle-button {
-            background: none;
-            border: none;
-            color: #6b7280;
-            cursor: pointer;
-            font-size: 0.875rem;
-            display: flex;
-            align-items: center;
-            transition: color 0.2s;
-        }
-        .toggle-button:hover {
-            color: #1e3a8a;
+            padding-bottom: 0.5rem;
+            margin-top: 0.5rem;
         }
         .toggle-button svg {
             transition: transform 0.3s ease;
@@ -82,64 +35,83 @@
         .toggle-button.open svg {
             transform: rotate(180deg);
         }
-        .status-ok {
-            color: #16a34a; background-color: #dcfce7; padding: 2px 10px; border-radius: 9999px; font-weight: 500;
+        /* Custom focus ring */
+        input:focus {
+            outline: none;
+            border-color: #3b82f6; /* blue-500 */
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
         }
-        .status-fail {
-            color: #dc2626; background-color: #fee2e2; padding: 2px 10px; border-radius: 9999px; font-weight: 500;
+        .status-pill {
+            display: inline-block;
+            padding: 0.125rem 0.625rem;
+            font-size: 0.75rem;
+            font-weight: 500;
+            border-radius: 9999px;
+            line-height: 1.25;
         }
+        .status-ok { color: #15803d; background-color: #dcfce7; } /* green */
+        .status-fail { color: #b91c1c; background-color: #fee2e2; } /* red */
+        .status-info { color: #1d4ed8; background-color: #dbeafe; } /* blue */
     </style>
 </head>
-<body class="bg-slate-50 text-gray-800">
+<body class="text-slate-800">
 
-    <div class="container mx-auto p-4 md:p-8 max-w-4xl">
+    <div class="container mx-auto p-4 md:p-8 max-w-2xl">
         
         <header class="text-center mb-8">
-            <h1 class="text-3xl md:text-4xl font-bold text-slate-800">โปรแกรมคำนวณจำนวนที่จอดรถ</h1>
-            <p class="text-md text-slate-500 mt-2">สำหรับอาคารขนาดใหญ่ตามข้อบัญญัติกรุงเทพมหานครและกฎกระทรวง</p>
+            <h1 class="text-3xl md:text-4xl font-bold text-slate-900">Parking Calculator</h1>
+            <p class="text-md text-slate-500 mt-2">คำนวณจำนวนที่จอดรถตามข้อบัญญัติ กทม.</p>
         </header>
 
-        <!-- Input Section -->
-        <div class="mb-8 p-6 bg-white rounded-xl shadow-sm space-y-4">
-            <div>
-                <label for="buildingArea" class="block text-lg font-medium text-slate-700 mb-2">1. กรอกพื้นที่อาคารรวม (ตารางเมตร)</label>
-                <input type="number" id="buildingArea" 
-                       class="w-full px-4 py-3 text-lg border-2 border-slate-200 rounded-lg focus:ring-2 focus:ring-blue-600 focus:border-blue-600 transition"
-                       placeholder="เช่น 73237"
-                       oninput="calculateParking()">
-            </div>
-             <div>
-                <label for="designedCarSpaces" class="block text-lg font-medium text-slate-700 mb-2">2. กรอกจำนวนที่จอดรถยนต์ที่จัดไว้ (ถ้ามี)</label>
-                <input type="number" id="designedCarSpaces" 
-                       class="w-full px-4 py-3 text-lg border-2 border-slate-200 rounded-lg focus:ring-2 focus:ring-blue-600 focus:border-blue-600 transition"
-                       placeholder="เช่น 620 (หากไม่กรอกจะใช้ค่าขั้นต่ำ)"
-                       oninput="calculateParking()">
-            </div>
-        </div>
+        <!-- Main Card -->
+        <main class="bg-white rounded-2xl shadow-sm border border-slate-200/80 p-6 sm:p-8 space-y-6">
+            
+            <!-- Input Section -->
+            <section class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                    <label for="buildingArea" class="block text-sm font-medium text-slate-700 mb-2">1. พื้นที่อาคารรวม (ตร.ม.)</label>
+                    <input type="number" id="buildingArea" 
+                           class="w-full px-4 py-2.5 text-base border border-slate-300 rounded-lg transition duration-200"
+                           placeholder="เช่น 73237"
+                           oninput="calculateParking()">
+                </div>
+                 <div>
+                    <label for="designedCarSpaces" class="block text-sm font-medium text-slate-700 mb-2">2. ที่จอดรถยนต์ที่จัดไว้ (ถ้ามี)</label>
+                    <input type="number" id="designedCarSpaces" 
+                           class="w-full px-4 py-2.5 text-base border border-slate-300 rounded-lg transition duration-200"
+                           placeholder="เช่น 620"
+                           oninput="calculateParking()">
+                </div>
+            </section>
 
-        <!-- Action Button -->
-        <div class="flex justify-end mb-6">
-            <button id="copyButton" onclick="copySummary()" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition flex items-center gap-2">
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="M4 1.5H3a2 2 0 0 0-2 2V14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V3.5a2 2 0 0 0-2-2h-1v1h1a1 1 0 0 1 1 1V14a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V3.5a1 1 0 0 1 1-1h1v-1z"/><path d="M9.5 1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-3a.5.5 0 0 1-.5-.5v-1a.5.5 0 0 1 .5-.5h3zM-1 8a.5.5 0 0 1 .5-.5h15a.5.5 0 0 1 0 1H-.5A.5.5 0 0 1-1 8z"/></svg>
-                คัดลอกสรุปผล
-            </button>
-        </div>
-
-        <!-- Results Section -->
-        <div id="results" class="space-y-4">
-            <!-- Cards will be inserted here by JavaScript -->
-        </div>
+            <!-- Separator -->
+            <div class="border-t border-slate-200 !mt-8 !mb-8"></div>
+            
+            <!-- Results Section -->
+            <section>
+                <div class="flex justify-between items-center mb-4">
+                     <h2 class="text-xl font-semibold text-slate-800">สรุปผลการคำนวณ</h2>
+                     <button id="copyButton" onclick="copySummary()" class="px-3 py-1.5 bg-slate-100 text-slate-600 text-sm font-medium rounded-md hover:bg-slate-200 transition flex items-center gap-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" viewBox="0 0 16 16"><path d="M4 1.5H3a2 2 0 0 0-2 2V14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V3.5a2 2 0 0 0-2-2h-1v1h1a1 1 0 0 1 1 1V14a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V3.5a1 1 0 0 1 1-1h1v-1z"/><path d="M9.5 1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-3a.5.5 0 0 1-.5-.5v-1a.5.5 0 0 1 .5-.5h3z"/></svg>
+                        <span>คัดลอก</span>
+                    </button>
+                </div>
+               
+                <div id="results" class="space-y-2">
+                    <!-- Results will be injected here -->
+                </div>
+            </section>
+        </main>
         
-        <!-- Footer Note -->
-        <footer class="text-center mt-12 text-sm text-slate-500">
-            <p><strong>ข้อสงวนสิทธิ์:</strong> โปรแกรมนี้จัดทำขึ้นเพื่อเป็นเครื่องมือช่วยในการคำนวณเบื้องต้นเท่านั้น</p>
-            <p>โปรดตรวจสอบกับสำนักการจราจรและขนส่ง (สจส.) หรือหน่วยงานที่เกี่ยวข้องเพื่อความถูกต้องสมบูรณ์อีกครั้ง</p>
+        <!-- Footer -->
+        <footer class="text-center mt-10 text-sm text-slate-500">
+            <p><strong>Disclaimer:</strong> โปรแกรมนี้เป็นเครื่องมือช่วยคำนวณเบื้องต้นเท่านั้น</p>
+            <p>กรุณาตรวจสอบกับหน่วยงานที่เกี่ยวข้องเพื่อความถูกต้องสมบูรณ์อีกครั้ง</p>
         </footer>
 
     </div>
 
     <script>
-        // Global variables to store results for copying
         let summaryData = {};
 
         function toggleDetails(id) {
@@ -152,35 +124,39 @@
         }
 
         function copySummary() {
-            const { minCarSpaces, designedCarSpaces, statusText, publicSpaces, bicycleSpaces, disabledSpaces } = summaryData;
+            if (Object.keys(summaryData).length === 0 || !summaryData.minCarSpaces) {
+                alert("กรุณากรอกข้อมูลเพื่อคำนวณก่อนคัดลอก");
+                return;
+            }
+
+            const { area, designedCarSpaces, minCarSpaces, statusText, publicSpaces, bicycleSpaces, disabledSpaces } = summaryData;
             
             const summaryText = `
 สรุปผลการคำนวณจำนวนที่จอดรถ
 ========================
-- พื้นที่อาคาร: ${document.getElementById('buildingArea').value || 'N/A'} ตร.ม.
-- ที่จอดรถยนต์ที่จัดไว้: ${designedCarSpaces || 'N/A'} คัน
+- พื้นที่อาคาร: ${area.toLocaleString()} ตร.ม.
+- ที่จอดรถยนต์ที่จัดไว้: ${designedCarSpaces ? designedCarSpaces.toLocaleString() + ' คัน' : 'N/A'}
 
-ผลลัพธ์:
-- ที่จอดรถยนต์ (ขั้นต่ำตามกฎหมาย): ${minCarSpaces} คัน (สถานะ: ${statusText.replace(/<[^>]*>/g, '')})
-- ที่จอดรถสาธารณะ (ที่ต้องจัด): ${publicSpaces} คัน
-- ที่จอดรถจักรยาน (ที่ต้องจัด): ${bicycleSpaces} คัน
-- ที่จอดรถผู้พิการ (ที่ต้องจัด): ${disabledSpaces} คัน
-            `.trim().replace(/^ +/gm, ''); // Trim and remove leading spaces
+ผลลัพธ์ที่ต้องจัดหา:
+- ที่จอดรถยนต์ (ขั้นต่ำ): ${minCarSpaces.toLocaleString()} คัน | สถานะ: ${statusText}
+- ที่จอดรถสาธารณะ: ${publicSpaces.toLocaleString()} คัน
+- ที่จอดรถจักรยาน: ${bicycleSpaces.toLocaleString()} คัน
+- ที่จอดรถผู้พิการ: ${disabledSpaces.toLocaleString()} คัน
+            `.trim().replace(/^ +/gm, '');
 
-            const textarea = document.createElement('textarea');
-            textarea.value = summaryText;
-            document.body.appendChild(textarea);
-            textarea.select();
-            document.execCommand('copy');
-            document.body.removeChild(textarea);
-
-            const copyButton = document.getElementById('copyButton');
-            copyButton.innerText = 'คัดลอกแล้ว!';
-            copyButton.classList.replace('bg-blue-600', 'bg-green-600');
-            setTimeout(() => {
-                copyButton.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="M4 1.5H3a2 2 0 0 0-2 2V14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V3.5a2 2 0 0 0-2-2h-1v1h1a1 1 0 0 1 1 1V14a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V3.5a1 1 0 0 1 1-1h1v-1z"/><path d="M9.5 1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-3a.5.5 0 0 1-.5-.5v-1a.5.5 0 0 1 .5-.5h3zM-1 8a.5.5 0 0 1 .5-.5h15a.5.5 0 0 1 0 1H-.5A.5.5 0 0 1-1 8z"/></svg> คัดลอกสรุปผล`;
-                copyButton.classList.replace('bg-green-600', 'bg-blue-600');
-            }, 2000);
+            navigator.clipboard.writeText(summaryText).then(() => {
+                const copyButton = document.getElementById('copyButton');
+                const originalText = copyButton.innerHTML;
+                copyButton.innerHTML = `<span>คัดลอกแล้ว!</span>`;
+                copyButton.classList.add('bg-green-100', 'text-green-700');
+                setTimeout(() => {
+                    copyButton.innerHTML = originalText;
+                    copyButton.classList.remove('bg-green-100', 'text-green-700');
+                }, 2000);
+            }).catch(err => {
+                console.error('Failed to copy: ', err);
+                alert('ไม่สามารถคัดลอกได้');
+            });
         }
 
         function calculateParking() {
@@ -192,137 +168,138 @@
             const designedCarSpacesValue = parseInt(designedCarSpacesInput.value);
 
             if (isNaN(area) || area <= 0) {
-                resultsDiv.innerHTML = `<div class="text-center p-8 bg-white rounded-lg shadow-sm"><p class="text-slate-500">กรุณากรอกพื้นที่อาคารเป็นตัวเลขที่ถูกต้อง</p></div>`;
+                resultsDiv.innerHTML = `<div class="text-center p-6 text-slate-500">กรุณากรอกพื้นที่อาคารเพื่อเริ่มคำนวณ</div>`;
+                summaryData = {};
                 return;
             }
 
             // --- Calculations ---
             const minCarSpaces = Math.ceil(area / 120);
             let effectiveCarSpaces = minCarSpaces;
-            let statusText = '';
-            let statusTextRaw = '';
+            let statusText = 'ใช้ค่าขั้นต่ำ';
+            let statusClass = 'status-info';
 
             if (!isNaN(designedCarSpacesValue) && designedCarSpacesValue > 0) {
                 effectiveCarSpaces = designedCarSpacesValue;
                 if (designedCarSpacesValue >= minCarSpaces) {
-                    statusText = `<span class="status-ok">เพียงพอ</span>`;
-                    statusTextRaw = 'เพียงพอ';
+                    statusText = 'เพียงพอ';
+                    statusClass = 'status-ok';
                 } else {
-                    statusText = `<span class="status-fail">ไม่เพียงพอ</span> (ขั้นต่ำ ${minCarSpaces} คัน)`;
-                    statusTextRaw = `ไม่เพียงพอ (ขั้นต่ำ ${minCarSpaces} คัน)`;
+                    statusText = 'ไม่เพียงพอ';
+                    statusClass = 'status-fail';
                 }
-            } else {
-                 statusText = `ใช้ค่าขั้นต่ำในการคำนวณ`;
-                 statusTextRaw = 'ใช้ค่าขั้นต่ำในการคำนวณ';
             }
 
             const publicSpaces = Math.ceil(effectiveCarSpaces / 100);
             const bicycleSpaces = 18 + Math.ceil(effectiveCarSpaces / 100);
-
             let disabledSpaces = 0;
             let disabledCalcString = '';
-            
-            // *** CORRECTED LOGIC AND TEXT FOR DISABLED PARKING ***
-            if (effectiveCarSpaces >= 1 && effectiveCarSpaces <= 25) {
-                disabledSpaces = 1; 
-                disabledCalcString = `กรณีที่จอดรถไม่เกิน 25 คัน (ปัจจุบัน <strong>${effectiveCarSpaces.toLocaleString()} คัน</strong>) ต้องมีที่จอดอย่างน้อย 1 คัน`;
-            } else if (effectiveCarSpaces >= 26 && effectiveCarSpaces <= 50) {
-                disabledSpaces = 2; 
-                disabledCalcString = `กรณีที่จอดรถ 26-50 คัน (ปัจจุบัน <strong>${effectiveCarSpaces.toLocaleString()} คัน</strong>) ต้องมีที่จอดอย่างน้อย 2 คัน`;
-            } else if (effectiveCarSpaces >= 51 && effectiveCarSpaces <= 75) {
-                disabledSpaces = 3; 
-                disabledCalcString = `กรณีที่จอดรถ 51-75 คัน (ปัจจุบัน <strong>${effectiveCarSpaces.toLocaleString()} คัน</strong>) ต้องมีที่จอดอย่างน้อย 3 คัน`;
-            } else if (effectiveCarSpaces >= 76 && effectiveCarSpaces <= 100) {
-                disabledSpaces = 4; 
-                disabledCalcString = `กรณีที่จอดรถ 76-100 คัน (ปัจจุบัน <strong>${effectiveCarSpaces.toLocaleString()} คัน</strong>) ต้องมีที่จอดอย่างน้อย 4 คัน`;
-            } else if (effectiveCarSpaces >= 101 && effectiveCarSpaces <= 150) {
-                disabledSpaces = 5; 
-                disabledCalcString = `กรณีที่จอดรถ 101-150 คัน (ปัจจุบัน <strong>${effectiveCarSpaces.toLocaleString()} คัน</strong>) ต้องมีที่จอดอย่างน้อย 5 คัน`;
-            } else if (effectiveCarSpaces >= 151 && effectiveCarSpaces <= 200) {
-                disabledSpaces = 6; 
-                disabledCalcString = `กรณีที่จอดรถ 151-200 คัน (ปัจจุบัน <strong>${effectiveCarSpaces.toLocaleString()} คัน</strong>) ต้องมีที่จอดอย่างน้อย 6 คัน`;
-            } else if (effectiveCarSpaces > 200) {
+
+            if (effectiveCarSpaces <= 0) {
+                disabledSpaces = 0;
+                disabledCalcString = '<li>ไม่มีที่จอดรถยนต์ ไม่ต้องมีที่จอดรถผู้พิการ</li>';
+            } else if (effectiveCarSpaces <= 25) {
+                disabledSpaces = 1;
+                disabledCalcString = `<li>กรณีที่จอดรถ 1-25 คัน (ปัจจุบัน <strong>${effectiveCarSpaces.toLocaleString()} คัน</strong>) ต้องมีที่จอดอย่างน้อย 1 คัน</li>`;
+            } else if (effectiveCarSpaces <= 50) {
+                disabledSpaces = 2;
+                disabledCalcString = `<li>กรณีที่จอดรถ 26-50 คัน (ปัจจุบัน <strong>${effectiveCarSpaces.toLocaleString()} คัน</strong>) ต้องมีที่จอดอย่างน้อย 2 คัน</li>`;
+            } else if (effectiveCarSpaces <= 75) {
+                disabledSpaces = 3;
+                disabledCalcString = `<li>กรณีที่จอดรถ 51-75 คัน (ปัจจุบัน <strong>${effectiveCarSpaces.toLocaleString()} คัน</strong>) ต้องมีที่จอดอย่างน้อย 3 คัน</li>`;
+            } else if (effectiveCarSpaces <= 100) {
+                disabledSpaces = 4;
+                disabledCalcString = `<li>กรณีที่จอดรถ 76-100 คัน (ปัจจุบัน <strong>${effectiveCarSpaces.toLocaleString()} คัน</strong>) ต้องมีที่จอดอย่างน้อย 4 คัน</li>`;
+            } else if (effectiveCarSpaces <= 150) {
+                disabledSpaces = 5;
+                disabledCalcString = `<li>กรณีที่จอดรถ 101-150 คัน (ปัจจุบัน <strong>${effectiveCarSpaces.toLocaleString()} คัน</strong>) ต้องมีที่จอดอย่างน้อย 5 คัน</li>`;
+            } else if (effectiveCarSpaces <= 200) {
+                disabledSpaces = 6;
+                disabledCalcString = `<li>กรณีที่จอดรถ 151-200 คัน (ปัจจุบัน <strong>${effectiveCarSpaces.toLocaleString()} คัน</strong>) ต้องมีที่จอดอย่างน้อย 6 คัน</li>`;
+            } else { // Over 200
                 const extraCars = effectiveCarSpaces - 200;
                 const additionalSpaces = Math.round(extraCars / 100);
                 disabledSpaces = 6 + additionalSpaces;
                 disabledCalcString = `
-                    <li>กรณีที่จอดรถ 151-200 คัน: <strong>ต้องมี 6 ที่จอด</strong></li>
+                    <li>สำหรับ 200 คันแรก: <strong>6 คัน</strong></li>
                     <li>ส่วนที่เกิน 200 คัน: ${effectiveCarSpaces.toLocaleString()} - 200 = ${extraCars.toLocaleString()} คัน</li>
-                    <li>เพิ่มอีก 1 คัน สำหรับทุก 100 คันที่เพิ่มขึ้น (เศษเกิน 50 ปัดขึ้น): Math.round(${extraCars.toLocaleString()} / 100) = <strong>${additionalSpaces} คัน</strong></li>
-                    <li><strong>รวมที่ต้องจัดหา:</strong> 6 + ${additionalSpaces} = <strong>${disabledSpaces} คัน</strong></li>
+                    <li>เพิ่มอีก 1 คัน ทุกๆ 100 คัน (เศษของ 50 ปัดขึ้น): Math.round(${extraCars.toLocaleString()} / 100) = <strong>${additionalSpaces} คัน</strong></li>
+                    <li class="!mt-2 font-semibold">รวมที่ต้องจัดหา: 6 + ${additionalSpaces} = <strong>${disabledSpaces} คัน</strong></li>
                 `;
-            } else {
-                 disabledCalcString = 'ไม่มีที่จอดรถยนต์ ไม่ต้องมีที่จอดรถผู้พิการ';
             }
-
-            // Store data for copy function
+            
+            // --- Store data for copy function ---
             summaryData = {
+                area,
+                designedCarSpaces: designedCarSpacesValue || null,
                 minCarSpaces,
-                designedCarSpaces: (!isNaN(designedCarSpacesValue) && designedCarSpacesValue > 0) ? designedCarSpacesValue : 'N/A',
-                statusText: statusTextRaw,
+                statusText,
                 publicSpaces,
                 bicycleSpaces,
-                disabledSpaces
+                disabledSpaces,
+                effectiveCarSpaces
             };
             
             // --- Generate HTML ---
-            const baseCarParkingText = (!isNaN(designedCarSpacesValue) && designedCarSpacesValue > 0) 
-                ? `จากจำนวนที่จอดรถยนต์ที่จัดไว้ <strong>${effectiveCarSpaces.toLocaleString()} คัน</strong>`
-                : `จากจำนวนที่จอดรถยนต์ขั้นต่ำ <strong>${effectiveCarSpaces.toLocaleString()} คัน</strong>`;
-
             resultsDiv.innerHTML = `
-                <!-- Car Parking Card -->
-                <div class="card p-4">
-                    <div class="flex items-center justify-between">
-                        <div class="flex items-center gap-4">
-                            <div class="icon-wrapper"><svg class="icon text-blue-600" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M0 0h24v24H0V0z" fill="none"/><path d="M18.92 6.01C18.72 5.42 18.16 5 17.5 5h-11c-.66 0-1.21.42-1.42 1.01L3 12v8c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-1h12v1c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-8l-2.08-5.99zM6.5 16c-.83 0-1.5-.67-1.5-1.5S5.67 13 6.5 13s1.5.67 1.5 1.5S7.33 16 6.5 16zm11 0c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zM5 11l1.5-4.5h11L19 11H5z"/></svg></div>
-                            <div>
-                                <h3 class="text-lg font-semibold text-slate-700">ที่จอดรถยนต์</h3>
-                                <p class="text-sm text-slate-500">ขั้นต่ำ: ${minCarSpaces.toLocaleString()} คัน | จัดไว้: ${(!isNaN(designedCarSpacesValue) && designedCarSpacesValue > 0) ? designedCarSpacesValue.toLocaleString() : 'N/A'} | สถานะ: ${statusText}</p>
-                            </div>
-                        </div>
-                        <button class="toggle-button" onclick="toggleDetails('car')">วิธีคิด <svg class="ml-1" width="12" height="12" fill="currentColor" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z"/></svg></button>
-                    </div>
-                    <div id="details-car" class="details-content border-t border-slate-200 mt-4">
-                        <p class="text-slate-700">ตามกฎกระทรวงฉบับที่ 7 ข้อ 3 กำหนดให้มี 1 คันต่อพื้นที่ 120 ตร.ม. (เศษของ 120 ปัดขึ้น)</p>
-                        <p class="text-slate-600 bg-slate-100 p-2 rounded-md mt-2 font-mono text-sm">Math.ceil(${area.toLocaleString()} / 120) = <strong>${minCarSpaces.toLocaleString()} คัน</strong></p>
-                    </div>
-                </div>
-
-                <!-- Other Parking Cards -->
-                ${generateResultCard('public', 'ที่จอดรถสาธารณะ', publicSpaces, 'emerald', '<svg class="icon text-emerald-600" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M0 0h24v24H0z" fill="none"/><path d="M18.92 6.01C18.72 5.42 18.16 5 17.5 5h-11c-.66 0-1.21.42-1.42 1.01L3 12v8c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-1h12v1c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-8l-2.08-5.99zM6.5 16c-.83 0-1.5-.67-1.5-1.5S5.67 13 6.5 13s1.5.67 1.5 1.5S7.33 16 6.5 16zm11 0c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zM5 11l1.5-4.5h11L19 11H5z"/><path d="M7 2h10v2H7z"/></svg>', `คำนวณ 1 คัน ต่อที่จอดรถยนต์ 100 คัน (เศษปัดขึ้น) ${baseCarParkingText}`, `Math.ceil(${effectiveCarSpaces.toLocaleString()} / 100) = <strong>${publicSpaces.toLocaleString()} คัน</strong>`)}
-                ${generateResultCard('bicycle', 'ที่จอดรถจักรยาน', bicycleSpaces, 'orange', '<svg class="icon text-orange-600" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zM6 16c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm12 0c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm-5.8-5.8l1.8-3.2H12V5H6v2h3.5l-2.3 4.1L5.5 10H2v2h4l3 5h2l3-5h4v-2h-3.5z"/></svg>', `ขั้นต่ำ 18 คัน และเพิ่ม 1 คัน ต่อที่จอดรถยนต์ 100 คัน (เศษปัดขึ้น) ${baseCarParkingText}`, `18 + Math.ceil(${effectiveCarSpaces.toLocaleString()} / 100) = 18 + ${Math.ceil(effectiveCarSpaces/100)} = <strong>${bicycleSpaces.toLocaleString()} คัน</strong>`)}
-                ${generateResultCard('disabled', 'ที่จอดรถผู้พิการ', disabledSpaces, 'purple', '<svg class="icon text-purple-600" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2c1.1 0 2 .9 2 2s-.9 2-2 2-2-.9-2-2 .9-2 2-2zm9 7h-5l-1.65 4.52c.48.27.8 1.05.8 1.88 0 1.1-.9 2-2 2s-2-.9-2-2c0-.83.32-1.61.8-1.88L11 9H6v11h12V9z"/></svg>', `ตามกฎกระทรวงฯ พ.ศ. 2564 ${baseCarParkingText}`, `<ul class="list-disc list-inside">${effectiveCarSpaces > 200 ? disabledCalcString : `<li>${disabledCalcString}</li>`}</ul>`)}
+                ${generateResultCard('car', 'ที่จอดรถยนต์', minCarSpaces.toLocaleString(), 'คัน', `สถานะ: <span class="status-pill ${statusClass}">${statusText}</span>`, `
+                    <p>ตามกฎกระทรวงฉบับที่ 7 ข้อ 3 กำหนดให้มี 1 คันต่อพื้นที่ 120 ตร.ม. (เศษปัดขึ้น)</p>
+                    <p class="font-mono text-sm mt-2">Math.ceil(${area.toLocaleString()} / 120) = <strong>${minCarSpaces.toLocaleString()} คัน</strong></p>
+                `)}
+                ${generateResultCard('public', 'ที่จอดรถสาธารณะ', publicSpaces.toLocaleString(), 'คัน', '', `
+                    <p>คำนวณ 1 คัน ต่อที่จอดรถยนต์ 100 คัน (เศษปัดขึ้น)</p>
+                    <p class="font-mono text-sm mt-2">Math.ceil(${effectiveCarSpaces.toLocaleString()} / 100) = <strong>${publicSpaces.toLocaleString()} คัน</strong></p>
+                `)}
+                ${generateResultCard('bicycle', 'ที่จอดรถจักรยาน', bicycleSpaces.toLocaleString(), 'คัน', '', `
+                    <p>ขั้นต่ำ 18 คัน และเพิ่ม 1 คัน ต่อที่จอดรถยนต์ 100 คัน (เศษปัดขึ้น)</p>
+                     <p class="font-mono text-sm mt-2">18 + Math.ceil(${effectiveCarSpaces.toLocaleString()} / 100) = <strong>${bicycleSpaces.toLocaleString()} คัน</strong></p>
+                `)}
+                ${generateResultCard('disabled', 'ที่จอดรถผู้พิการ', disabledSpaces.toLocaleString(), 'คัน', '', `
+                    <p class="mb-2">คำนวณตามจำนวนที่จอดรถยนต์ที่จัดหาทั้งหมด (<strong>${effectiveCarSpaces.toLocaleString()} คัน</strong>) ตามกฎกระทรวงฯ พ.ศ. 2564</p>
+                    <ul class="list-disc list-inside space-y-1">${disabledCalcString}</ul>
+                `)}
             `;
         }
         
-        function generateResultCard(id, title, value, color, icon, description, formula) {
+        function generateResultCard(id, title, value, unit, statusHtml, detailsHtml) {
+            const icon = {
+                car: `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-blue-500"><path d="M19 17h2c.6 0 1-.4 1-1v-3c0-.9-.7-1.7-1.5-1.9C18.7 10.6 16 10 16 10s-1.3-1.4-2.2-2.3c-.5-.4-1.1-.7-1.8-.7H5c-.6 0-1.1.4-1.4.9L2 12v9a2 2 0 0 0 2 2h3.5"></path><circle cx="6.5" cy="17.5" r="2.5"></circle><circle cx="16.5" cy="17.5" r="2.5"></circle></svg>`,
+                public: `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-green-500"><path d="M12 22a8 8 0 0 0 8-8h-3a5 5 0 0 1-5 5v3z"></path><path d="M22 12a8 8 0 0 0-8-8v3a5 5 0 0 1 5 5h3z"></path><path d="M12 2a8 8 0 0 0-8 8h3a5 5 0 0 1 5-5V2z"></path><path d="m14 10-4.5 4.5"></path><circle cx="12" cy="12" r="10"></circle></svg>`,
+                bicycle: `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-orange-500"><path d="M12 18a2 2 0 0 1-2-2c0-1.1.9-2 2-2s2 .9 2 2a2 2 0 0 1-2 2Z"></path><path d="M18 18a2 2 0 0 1-2-2c0-1.1.9-2 2-2s2 .9 2 2a2 2 0 0 1-2 2Z"></path><path d="M12 12a6 6 0 0 0-6 6v2h12v-2a6 6 0 0 0-6-6Z"></path><path d="M15 6a3 3 0 1 0-6 0"></path></svg>`,
+                disabled: `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-purple-500"><circle cx="12" cy="12" r="10"></circle><path d="M12 16a4 4 0 1 0 0-8 4 4 0 0 0 0 8Z"></path><path d="M12 12h.01"></path></svg>`
+            }[id];
+
             return `
-                <div class="card p-4">
-                    <div class="flex items-center justify-between">
-                        <div class="flex items-center gap-4">
-                            <div class="icon-wrapper">${icon}</div>
-                            <div>
-                                <h3 class="text-lg font-semibold text-slate-700">${title}</h3>
-                                <div class="flex items-baseline">
-                                    <span class="result-value">${value.toLocaleString()}</span>
-                                    <span class="unit">คัน</span>
-                                </div>
+                <div class="border-t border-slate-200/80 first:border-t-0">
+                    <div class="py-3 flex items-center justify-between">
+                        <div class="flex items-center gap-3">
+                            <div class="flex-shrink-0 w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center">${icon}</div>
+                            <div class="flex-grow">
+                                <h4 class="font-medium text-slate-800">${title}</h4>
+                                <div class="text-sm text-slate-500">${statusHtml || `ต้องจัดหา`}</div>
                             </div>
                         </div>
-                        <button class="toggle-button" onclick="toggleDetails('${id}')">วิธีคิด <svg class="ml-1" width="12" height="12" fill="currentColor" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z"/></svg></button>
+                        <div class="text-right flex items-center gap-4">
+                             <div class="flex items-baseline">
+                                <span class="text-2xl font-bold text-slate-900">${value}</span>
+                                <span class="ml-1.5 text-sm text-slate-500">${unit}</span>
+                            </div>
+                            <button class="toggle-button text-slate-400 hover:text-slate-600" onclick="toggleDetails('${id}')">
+                                <svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z"/></svg>
+                            </button>
+                        </div>
                     </div>
-                    <div id="details-${id}" class="details-content border-t border-slate-200 mt-4">
-                        <p class="text-slate-700">${description}</p>
-                        <div class="text-slate-600 bg-slate-100 p-2 rounded-md mt-2 font-mono text-sm">${formula}</div>
+                    <div id="details-${id}" class="details-content bg-slate-50 rounded-lg p-4 text-slate-600 text-sm">
+                        ${detailsHtml}
                     </div>
                 </div>
             `;
         }
 
-        // Initial call to set the default state
+        // Initial calculation on page load
         calculateParking();
     </script>
 
 </body>
 </html>
+
